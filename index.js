@@ -3,13 +3,13 @@ const cron = require("node-cron")
 
 
 // token
-const authorization = ""
+const authorization = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjExNTk3NiwidXVpZCI6ImY5NmZlZDgzLTkyZjgtNDVkNS05ZTQzLWYwMDEzN2M1YmM2NSIsImlzX2FkbWluIjpmYWxzZSwiaXNfc3VwZXJfYWRtaW4iOmZhbHNlLCJzdWJfbmFtZSI6IiIsInRlbmFudCI6ImF1dG9kbCIsInVwayI6IiJ9.gzDYokTAsthTvwbPgrr6VHAx496A-6FXqyiF8AEY2iUnVCUaUnR716BrDgVjUpHzRJvsAmyIidGzppascD5vow"
 const list_origin = "https://www.autodl.com"
 const list_referer = "https://www.autodl.com/market/list"
 const contentType = "application/json;charset=UTF-8"
 // 想抢的显卡筛选，如果是all in，则[]
 // RTX 3090, RTX 4090, RTX 4090(抢先版)
-const GPU = ["Tesla T4", "RTX 4090"]
+const GPU = ["RTX 3090", "RTX 4090", "RTX 4090(抢先版)"]
 
 const image_type = "hub.kce.ksyun.com/autodl-image/torch:cuda11.3-cudnn8-devel-ubuntu20.04-py38-torch1.10.0"
 
@@ -26,7 +26,7 @@ const maps = {
     "北京C区": 1,
     "毕业季A区": 1,
     "南京新手区": 1,
-    "特惠/泉州A区": 1,
+    "泉州A区": 1,
     "深圳A区": 1,
     "潮汐算力": 1,
     "宿迁企业区": 1
