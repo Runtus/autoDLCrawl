@@ -1,8 +1,9 @@
 const axios = require("axios")
+const cron = require("node-cron")
 
 
 // token
-const authorization = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjExNTk3NiwidXVpZCI6ImY5NmZlZDgzLTkyZjgtNDVkNS05ZTQzLWYwMDEzN2M1YmM2NSIsImlzX2FkbWluIjpmYWxzZSwiaXNfc3VwZXJfYWRtaW4iOmZhbHNlLCJzdWJfbmFtZSI6IiIsInRlbmFudCI6ImF1dG9kbCIsInVwayI6IiJ9.gzDYokTAsthTvwbPgrr6VHAx496A-6FXqyiF8AEY2iUnVCUaUnR716BrDgVjUpHzRJvsAmyIidGzppascD5vow"
+const authorization = ""
 const list_origin = "https://www.autodl.com"
 const list_referer = "https://www.autodl.com/market/list"
 const contentType = "application/json;charset=UTF-8"
@@ -31,6 +32,36 @@ const maps = {
     "宿迁企业区": 1
 }
 
+let isRunner = false
+let isSuccess = false
+
+// 只能选择被60整除的数
+const secondTimestamp = (stamp) => {
+    const count = 60 / stamp
+    let str = ""
+    let i = 0
+    while (i < count) {
+        str += i === 0 ? `${i * stamp}` : `,${i * stamp}`
+        i++
+    }
+    return str
+}
+
+
+const task = cron.schedule(`${secondTimestamp(1)} * * * * *`, async () => {
+    if (!isRunner) {
+        isRunner = true
+        runner().then(() => {
+            isRunner = false
+            // 结束进程
+            if (isSuccess) {
+                task.stop()
+            }
+        }).catch(err => {
+            console.error("请联系管理员", err)
+        })
+    }
+});
 
 async function runner(){
     const area_list = await axios({
@@ -43,9 +74,8 @@ async function runner(){
             "content-type": contentType
         }
     })
-
-    // beijing-B
-    let region_sign = "foshan-A"
+    // 西北新区
+    let region_sign = ""
 
     for (const o of area_list.data.data){
         if(!maps[o.region_name]){
@@ -132,10 +162,9 @@ async function runner(){
         data: {"instance_info":{"machine_id": machine_id,"charge_type":"payg","req_gpu_amount": gpu_num,"image": image_type,"private_image_uuid":"","reproduction_uuid":"","instance_name":"","expand_data_disk":0},"price_info":{"coupon_id_list":[],"machine_id": machine_id,"charge_type":"payg","duration":1,"num": gpu_num,"expand_data_disk":0}}
     }).then(res => {
         console.log(res.data)
+        isSuccess = true
     }).catch(err => {
         console.error("error", err)
     })
 }
 
-
-runner()
